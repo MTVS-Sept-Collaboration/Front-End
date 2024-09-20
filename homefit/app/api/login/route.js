@@ -23,7 +23,7 @@ export async function POST(request) {
       error.response ? error.response.data : error.message,
     );
     return NextResponse.json(
-      { message: "An error occurred during login" },
+      { message: "로그인 중 알 수 없는 오류가 발생했습니다." },
       { status: error.response ? error.response.status : 500 },
     );
   }
