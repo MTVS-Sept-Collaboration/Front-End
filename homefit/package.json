@@ -1,5 +1,5 @@
 {
-  "name": "homefit",
+  "name": "free-nextadmin-nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,20 +9,29 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "axios": "^1.7.7",
-    "framer-motion": "^11.5.5",
+    "apexcharts": "^3.45.2",
+    "flatpickr": "^4.6.13",
+    "jsvectormap": "^1.5.3",
     "next": "14.2.13",
     "react": "^18",
+    "react-apexcharts": "^1.4.1",
     "react-dom": "^18",
-    "swr": "^2.2.5"
+    "react-quill": "^2.0.0",
+    "react-select": "^5.8.0",
+    "react-table": "^7.8.0"
   },
   "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/react-table": "^7.7.19",
+    "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1"
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
 }
