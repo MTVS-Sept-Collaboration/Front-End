@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import ChartTwo from "../Charts/ChartTwo";
 import DataStats from "@/components/DataStats/DataStats";
-import ChartOne from "@/components/Charts/ChartOne";
+import CCU from "@/components/Charts/CCU";
+import Subscriber from "@/components/Charts/Subscriber";
 
 const Dashboard: React.FC = () => {
   return (
@@ -10,8 +10,8 @@ const Dashboard: React.FC = () => {
       <DataStats />
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-9 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
+        <CCU />
+        <Subscriber />
       </div>
     </>
   );

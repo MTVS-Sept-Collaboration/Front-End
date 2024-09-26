@@ -1,20 +1,31 @@
 'use client'
 
-import { useState } from "react";
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
 
 const DropdownUser = () => {
-  const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    setIsLoggedIn(!!token);
+    if (token) {
+      setUserName('관리자'); // 임시로 하드코딩
+    }
+  }, []);
 
   const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('jwt');
-    }
-    router.push('/login');
+    localStorage.removeItem('jwt');
+    setIsLoggedIn(false);
+    window.location.href = '/login';
+  };
+
+  const handleLogin = () => {
+    window.location.href = '/login';
   };
 
   return (
@@ -39,7 +50,7 @@ const DropdownUser = () => {
         </span>
 
         <span className="flex items-center gap-2 font-medium text-dark dark:text-dark-6">
-          <span className="hidden lg:block">Minjae Lee</span>
+          <span className="hidden lg:block">{isLoggedIn ? userName : '게스트'}</span>
 
           <svg
             className={`fill-current duration-200 ease-in ${dropdownOpen && "rotate-180"}`}
@@ -83,7 +94,7 @@ const DropdownUser = () => {
 
             <span className="block">
               <span className="block font-medium text-dark dark:text-white">
-                kamillee0918
+                admin
               </span>
               <span className="block font-medium text-dark-5 dark:text-dark-6">
                 parousia0918@gmail.com
@@ -154,7 +165,7 @@ const DropdownUser = () => {
           <div className="p-2.5">
             <button
               className="flex w-full items-center gap-2.5 rounded-[7px] p-2.5 text-sm font-medium text-dark-4 duration-300 ease-in-out hover:bg-gray-2 hover:text-dark dark:text-dark-6 dark:hover:bg-dark-3 dark:hover:text-white lg:text-base"
-              onClick={handleLogout}
+              onClick={isLoggedIn ? handleLogout : handleLogin}
             >
               <svg
                 className="fill-current"
@@ -180,7 +191,7 @@ const DropdownUser = () => {
                   </clipPath>
                 </defs>
               </svg>
-              로그아웃
+              {isLoggedIn ? '로그아웃' : '로그인'}
             </button>
           </div>
         </div>

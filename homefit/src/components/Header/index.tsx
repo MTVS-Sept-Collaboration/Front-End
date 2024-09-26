@@ -46,7 +46,7 @@ const Header = (props: {
                   }`}
                 ></span>
                 <span
-                  className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-dark duration-200 ease-in-out dark:bg-white ${
+                className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-dark duration-200 ease-in-out dark:bg-white ${
                     !props.sidebarOpen && "!h-0 !delay-200"
                   }`}
                 ></span>
@@ -61,6 +61,7 @@ const Header = (props: {
               height={32} // auto로 설정
               src={"/images/logo/homefit-logo-icon.svg"}
               alt="Logo"
+              style={{ width: "32px", height: "32px" }}
             />
           </Link>
         </div>

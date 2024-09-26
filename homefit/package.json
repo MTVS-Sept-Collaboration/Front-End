@@ -1,5 +1,5 @@
 {
-  "name": "free-nextadmin-nextjs",
+  "name": "homefit",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "apexcharts": "^3.45.2",
+    "axios": "^1.7.7",
     "flatpickr": "^4.6.13",
     "jsvectormap": "^1.5.3",
     "next": "14.2.13",

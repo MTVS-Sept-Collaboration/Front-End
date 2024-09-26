@@ -1,42 +1,28 @@
-'use client'
-
 import Link from "next/link";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/api';
 
 export default function LoginWithPassword() {
-  const router = useRouter();
-  
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [data, setData] = useState({
     remember: false,
   });
-
+  const router = useRouter();
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userName, password }),
-        // 개발 환경에서만 사용하세요!
-      // ...(process.env.NODE_ENV === 'development' && { rejectUnauthorized: false }),
-      });
+    setError('');
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('jwt', data.jwtToken);
-        router.push('/');
-      } else {
-        // 에러 처리
-        console.error('Login failed');
-      }
+    try {
+      const response = await api.post('/api/login', { userName, password });
+      localStorage.setItem('jwt', response.data.jwtToken);
+      router.push('/');
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login failed:', error);
+      setError('아이디와 비밀번호를 확인해주세요.');
     }
   };
 
@@ -126,7 +112,7 @@ export default function LoginWithPassword() {
       <div className="mb-6 flex items-center justify-between gap-2 py-2">
         <label
           htmlFor="remember"
-          className="flex cursor-pointer select-none items-center font-satoshi text-base font-medium text-dark dark:text-white"
+          className="flex cursor-pointer select-none items-center text-base font-medium text-dark dark:text-white"
         >
           <input
             type="checkbox"
@@ -159,13 +145,14 @@ export default function LoginWithPassword() {
 
         <Link
           href="/auth/forgot-password"
-          className="select-none font-satoshi text-base font-medium text-dark underline duration-300 hover:text-primary dark:text-white dark:hover:text-primary"
+          className="select-none text-base font-medium text-dark underline duration-300 hover:text-primary dark:text-white dark:hover:text-primary"
         >
           비밀번호 찾기
         </Link>
       </div>
 
       <div className="mb-4.5">
+        {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
           className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary p-4 font-medium text-white transition hover:bg-opacity-90"

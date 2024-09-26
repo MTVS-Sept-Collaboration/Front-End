@@ -1,12 +1,16 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import LogLevelSelectGroup from '@/components/FormElements/SelectGroup/LogLevelSelectGroup';
+import LoggerSelectGroup from '@/components/FormElements/SelectGroup/LoggerSelectGroup';
+import SortOrderSelectGroup from '@/components/FormElements/SelectGroup/SortOrderSelectGroup';
+import LogsPerPageSelectGroup from '@/components/FormElements/SelectGroup/LogPerPageSelectGroup';
 
 interface LogEntry {
   timestamp: string;
   level: string;
-  logger: string;
   message: string;
+  shortLogger: string;
 }
 
 interface LogResponse {
@@ -23,29 +27,20 @@ const LogComponent: React.FC = () => {
   const [loggerFilter, setLoggerFilter] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [logsPerPage, setLogsPerPage] = useState(5);
+  const [logsPerPage, setLogsPerPage] = useState(20);
   const [uniqueLoggers, setUniqueLoggers] = useState<string[]>([]);
 
-  const getLoggerName = useCallback((message: string): string => {
-    const parts = message.split(' - ');
-    if (parts.length > 1) {
-      const loggerParts = parts[0].split('.');
-      return loggerParts[loggerParts.length - 1];
-    }
-    return '';
-  }, []);
-
   const updateUniqueLoggers = useCallback((logs: LogEntry[]) => {
-    const loggerSet = new Set(logs.map(log => getLoggerName(log.message)));
+    const loggerSet = new Set(logs.map(log => log.shortLogger));
     const loggers = Array.from(loggerSet);
     setUniqueLoggers(loggers);
-  }, [getLoggerName]);
+  }, []);
 
   const fetchLogs = useCallback(async () => {
     try {
       setError(null);
-      const url = `/api/logs?page=${currentPage}&limit=${logsPerPage}&sortOrder=${sortOrder}&logLevel=${levelFilter}&logger=${loggerFilter}`;
-      console.log('Fetching logs with URL:', url);
+      const url = `/api/logs?page=${currentPage}&limit=${logsPerPage}&sortOrder=${sortOrder}&logLevel=${levelFilter}`;
+      // console.log('Fetching logs with URL:', url);
       const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
@@ -53,8 +48,18 @@ const LogComponent: React.FC = () => {
       });
       if (response.ok) {
         const data: LogResponse = await response.json();
-        console.log('Fetched data:', data);
-        setLogData(data);
+        // console.log('Fetched data:', data);
+        
+        // 로거 필터링을 클라이언트 측에서 수행
+        const filteredLogs = loggerFilter && loggerFilter !== '모든 로거'
+          ? data.logs.filter(log => 
+            log.shortLogger.toLowerCase().includes(loggerFilter.toLowerCase()))
+          : data.logs;
+        
+        setLogData({
+          ...data,
+          logs: filteredLogs
+        });
         updateUniqueLoggers(data.logs);
       } else {
         const errorData = await response.json();
@@ -64,10 +69,12 @@ const LogComponent: React.FC = () => {
       console.error('Error fetching logs:', error);
       setError('An error occurred while fetching logs');
     }
-  }, [currentPage, logsPerPage, sortOrder, levelFilter, loggerFilter, updateUniqueLoggers]);
+  }, [currentPage, logsPerPage, sortOrder, levelFilter, loggerFilter]);
 
   useEffect(() => {
     fetchLogs();
+    const intervalId = setInterval(fetchLogs, 10000); // 10초마다 업데이트(새로고침 X)
+    return () => clearInterval(intervalId);
   }, [fetchLogs]);
 
   const getLogLevelColor = (level: string) => {
@@ -90,6 +97,7 @@ const LogComponent: React.FC = () => {
   };
 
   const getLogLevel = (log: LogEntry): string => {
+
     return log.level;
   };
 
@@ -99,7 +107,7 @@ const LogComponent: React.FC = () => {
 
   const handleLogsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLogsPerPage = Number(e.target.value);
-    console.log('Changing logs per page to:', newLogsPerPage);
+    // console.log('Changing logs per page to:', newLogsPerPage);
     setLogsPerPage(newLogsPerPage);
     setCurrentPage(1);
   };
@@ -183,43 +191,10 @@ const LogComponent: React.FC = () => {
   return (
     <div className="rounded-[10px] border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card sm:p-7.5">
       <div className="flex flex-wrap gap-4 mb-4">
-        <button 
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-          onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-        >
-          시간순 정렬: {sortOrder === 'asc' ? '오름차순' : '내림차순'}
-        </button>
-        <select 
-          className="px-4 py-2 border rounded"
-          onChange={(e) => setLevelFilter(e.target.value)} 
-          value={levelFilter}
-        >
-          <option value="">모든 레벨</option>
-          <option value="INFO">INFO</option>
-          <option value="WARN">WARN</option>
-          <option value="ERROR">ERROR</option>
-          <option value="DEBUG">DEBUG</option>
-        </select>
-        <select 
-          className="px-4 py-2 border rounded"
-          onChange={(e) => setLoggerFilter(e.target.value)} 
-          value={loggerFilter}
-        >
-          <option value="">모든 로거</option>
-          {uniqueLoggers.map(logger => (
-            <option key={logger} value={logger}>{logger}</option>
-          ))}
-        </select>
-        <select 
-          className="px-4 py-2 border rounded"
-          onChange={handleLogsPerPageChange} 
-          value={logsPerPage}
-        >
-          <option value={5}>5개씩 보기</option>
-          <option value={10}>10개씩 보기</option>
-          <option value={20}>20개씩 보기</option>
-          <option value={50}>50개씩 보기</option>
-        </select>
+        <SortOrderSelectGroup sortOrder={sortOrder} setSortOrder={setSortOrder} />
+        <LogLevelSelectGroup levelFilter={levelFilter} setLevelFilter={setLevelFilter} />
+        <LoggerSelectGroup loggerFilter={loggerFilter} setLoggerFilter={setLoggerFilter} uniqueLoggers={uniqueLoggers} />
+        <LogsPerPageSelectGroup logsPerPage={logsPerPage} setLogsPerPage={setLogsPerPage} />
       </div>
 
       {error && <div className="error text-red-500 mt-2">{error}</div>}
@@ -228,7 +203,7 @@ const LogComponent: React.FC = () => {
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-[#F7F9FC] text-left dark:bg-dark-2">
-              <th className="min-w-[100px] px-4 py-4 font-medium text-dark dark:text-white xl:pl-7.5">타임스탬프</th>
+              <th className="min-w-[150px] px-4 py-4 font-medium text-dark dark:text-white xl:pl-7.5">타임스탬프</th>
               <th className="min-w-[150px] px-4 py-4 font-medium text-dark dark:text-white">로그 레벨</th>
               <th className="min-w-[150px] px-4 py-4 font-medium text-dark dark:text-white">로거</th>
               <th className="min-w-[300px] px-4 py-4 font-medium text-dark dark:text-white">로그 본문</th>
@@ -243,7 +218,7 @@ const LogComponent: React.FC = () => {
                     {getLogLevel(log)}
                   </span>
                 </td>
-                <td className="px-4 py-4 break-all">{getLoggerName(log.message)}</td>
+                <td className="px-4 py-4 break-all">{log.shortLogger}</td>
                 <td className="px-4 py-4 break-words">{getLogMessage(log.message)}</td>
               </tr>
             ))}

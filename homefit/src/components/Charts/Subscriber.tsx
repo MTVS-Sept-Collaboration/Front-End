@@ -3,14 +3,14 @@ import React from "react";
 import ReactApexChart from "react-apexcharts";
 import DefaultSelectOption from "@/components/SelectOption/DefaultSelectOption";
 
-const ChartTwo: React.FC = () => {
+const Subscriber: React.FC = () => {
   const series = [
     {
-      name: "Sales",
+      name: "신규 가입자 수",
       data: [44, 55, 41, 67, 22, 43, 65],
     },
     {
-      name: "Revenue",
+      name: "탈퇴 사용자 수",
       data: [13, 23, 20, 8, 13, 27, 15],
     },
   ];
@@ -18,7 +18,7 @@ const ChartTwo: React.FC = () => {
   const options: ApexOptions = {
     colors: ["#5750F1", "#0ABEF9"],
     chart: {
-      fontFamily: "Satoshi, sans-serif",
+      fontFamily: "Pretendard, sans-serif",
       type: "bar",
       height: 335,
       stacked: true,
@@ -71,12 +71,12 @@ const ChartTwo: React.FC = () => {
     },
 
     xaxis: {
-      categories: ["M", "T", "W", "T", "F", "S", "S"],
+      categories: ["월", "화", "수", "목", "금", "토", "일"],
     },
     legend: {
       position: "top",
       horizontalAlign: "left",
-      fontFamily: "Satoshi",
+      fontFamily: "Pretendard",
       fontWeight: 500,
       fontSize: "14px",
 
@@ -98,11 +98,11 @@ const ChartTwo: React.FC = () => {
       <div className="mb-4 justify-between gap-4 sm:flex">
         <div>
           <h4 className="text-body-2xlg font-bold text-dark dark:text-white">
-            Profit this week
+            주간별 사용자 가입/탈퇴 추이
           </h4>
         </div>
         <div>
-          <DefaultSelectOption options={["This Week", "Last Week"]} />
+          <DefaultSelectOption options={["이번 주", "지난 주"]} />
         </div>
       </div>
 
@@ -120,4 +120,4 @@ const ChartTwo: React.FC = () => {
   );
 };
 
-export default ChartTwo;
+export default Subscriber;
