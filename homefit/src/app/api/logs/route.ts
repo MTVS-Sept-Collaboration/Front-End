@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 import https from 'https';
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
   const sortOrder = searchParams.get('sortOrder') || 'desc';
   const logLevel = searchParams.get('logLevel') || '';
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
-  const logger = searchParams.get('logger') || '';
+  const limit = searchParams.get('limit') || '20';
 
   return new Promise((resolve) => {
     const options = {
-      hostname: 'localhost',
-      port: 8081,
-      path: `/api/logs?sortOrder=${sortOrder}&logLevel=${logLevel}&page=${page}&limit=${limit}&logger=${logger}`,
+      // hostname: 'localhost',
+      hostname: '125.132.216.190',
+      port: 12502,
+      path: `/api/logs?sortOrder=${sortOrder}&logLevel=${logLevel}&page=${page}&limit=${limit}`,
       method: 'GET',
       headers: {
         'Authorization': request.headers.get('Authorization') || '',
