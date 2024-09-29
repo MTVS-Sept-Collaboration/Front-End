@@ -49,6 +49,6 @@
 
 <!--Url for Buttons-->
 [view-vercel-badge]: https://img.shields.io/badge/Vercel-000?logo=vercel&logoColor=fff&style=for-the-badge
-[view-vercel-url]: https://admin-homefit.vercel.app
+[view-vercel-url]: https://mtvs-homefit.vercel.app
 [issue-feature-shield]: https://img.shields.io/badge/-%E2%9C%A8%20request%20feature-A9D0F5?style=for-the-badge
 [issue-feature-url]: https://github.com/MTVS-Sept-Collaboration/Front-End/issues
